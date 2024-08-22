@@ -1,1 +1,87 @@
+-- Create the database
+CREATE DATABASE IF NOT EXISTS recipe_management;
+USE recipe_management;
+
+-- Create the ingredients table
+CREATE TABLE IF NOT EXISTS ingredients (
+    ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
+    ingredient_name VARCHAR(100) UNIQUE NOT NULL
+);
+
+-- Create the recipes table
+CREATE TABLE IF NOT EXISTS recipes (
+    recipe_id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_name VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT
+);
+
+-- Create the recipe_ingredients table (relationship between recipes and ingredients)
+CREATE TABLE IF NOT EXISTS recipe_ingredients (
+    recipe_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT NOT NULL,
+    ingredient_id INT NOT NULL,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
+    FOREIGN KEY (ingredient_id) REFERENCES ingredients(ingredient_id)
+);
+
+-- Create the available_ingredients table
+CREATE TABLE IF NOT EXISTS available_ingredients (
+    available_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
+    ingredient_id INT NOT NULL,
+    FOREIGN KEY (ingredient_id) REFERENCES ingredients(ingredient_id)
+);
+
+-- Populate ingredients table with some common ingredients
+INSERT INTO ingredients (ingredient_name) VALUES
+('Egg'),
+('Butter'),
+('Bread'),
+('Cheese'),
+('Tomato'),
+('Onion'),
+('Garlic'),
+('Salt'),
+('Pepper'),
+('Olive Oil'),
+('Milk'),
+('Sugar'),
+('Flour'),
+('Yogurt');
+
+-- Populate recipes table with some sample recipes and their descriptions
+INSERT INTO recipes (recipe_name, description) VALUES
+('Scrambled Eggs', 'Whisk eggs, salt, and pepper in a bowl. Heat butter in a pan and pour in the egg mixture. Stir gently until cooked.'),
+('Grilled Cheese Sandwich', 'Butter the bread slices, place cheese between them, and grill on a pan until golden brown on both sides.'),
+('Tomato Soup', 'Sauté onions and garlic in olive oil, add chopped tomatoes, and cook until soft. Blend, then simmer and season with salt and pepper.'),
+('Pancakes', 'Mix flour, milk, eggs, and sugar to form a batter. Pour onto a hot griddle and cook until bubbles form, then flip and cook the other side.'),
+('Garlic Bread', 'Mix butter, minced garlic, and salt. Spread on bread slices and bake until crispy.');
+
+-- Populate recipe_ingredients table with the relationships between recipes and ingredients
+INSERT INTO recipe_ingredients (recipe_id, ingredient_id) VALUES
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Scrambled Eggs'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Egg')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Scrambled Eggs'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Butter')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Grilled Cheese Sandwich'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Bread')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Grilled Cheese Sandwich'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Cheese')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Grilled Cheese Sandwich'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Butter')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Tomato Soup'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Tomato')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Tomato Soup'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Onion')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Tomato Soup'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Garlic')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Tomato Soup'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Olive Oil')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Pancakes'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Flour')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Pancakes'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Milk')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Pancakes'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Egg')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Pancakes'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Sugar')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Garlic Bread'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Bread')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Garlic Bread'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Butter')),
+((SELECT recipe_id FROM recipes WHERE recipe_name = 'Garlic Bread'), (SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Garlic'));
+
+-- Populate available_ingredients table with some ingredients that are currently available
+INSERT INTO available_ingredients (ingredient_id) VALUES
+((SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Egg')),
+((SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Butter')),
+((SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Bread')),
+((SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Cheese')),
+((SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Tomato')),
+((SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Garlic')),
+((SELECT ingredient_id FROM ingredients WHERE ingredient_name = 'Milk'));
 
